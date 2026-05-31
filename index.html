@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -178,6 +177,7 @@ padding:12px;
 margin-bottom:15px;
 border:1px solid #ddd;
 border-radius:10px;
+font-size:15px;
 }
 
 .submit-btn{
@@ -189,6 +189,11 @@ color:white;
 font-size:16px;
 border-radius:10px;
 cursor:pointer;
+transition:.3s;
+}
+
+.submit-btn:hover{
+background:#6a330e;
 }
 
 /* FOOTER */
@@ -298,6 +303,8 @@ and order with ease.
 
 </section>
 
+<!-- ORDER MODAL -->
+
 <div class="modal" id="orderModal">
 
 <div class="modal-content">
@@ -310,13 +317,13 @@ and order with ease.
 
 <input type="text" id="flavour" readonly>
 
-<input type="text" placeholder="Full Name" required>
+<input type="text" id="name" placeholder="Full Name" required>
 
-<input type="tel" placeholder="Phone Number" required>
+<input type="tel" id="phone" placeholder="Phone Number" required>
 
-<textarea placeholder="Delivery Address" required></textarea>
+<textarea id="address" placeholder="Delivery Address" required></textarea>
 
-<input type="number" placeholder="Quantity" min="1" required>
+<input type="number" id="quantity" placeholder="Quantity" min="1" required>
 
 <button class="submit-btn" type="submit">
 Submit Order
@@ -329,33 +336,67 @@ Submit Order
 </div>
 
 <footer>
-
 <p>Tea Buddy © 2026</p>
-
 </footer>
 
 <script>
 
 function openForm(flavour){
-document.getElementById("orderModal").style.display="flex";
-document.getElementById("flavour").value=flavour;
+document.getElementById("orderModal").style.display = "flex";
+document.getElementById("flavour").value = flavour;
 }
 
 function closeForm(){
-document.getElementById("orderModal").style.display="none";
+document.getElementById("orderModal").style.display = "none";
 }
 
-document.getElementById("orderForm").addEventListener("submit",function(e){
+window.onclick = function(event){
+const modal = document.getElementById("orderModal");
+
+if(event.target == modal){
+closeForm();
+}
+}
+
+document.getElementById("orderForm").addEventListener("submit", async function(e){
 
 e.preventDefault();
 
-alert(
-"Thank you for your order!\n\nWe have received your request."
+const data = {
+flavour: document.getElementById("flavour").value,
+name: document.getElementById("name").value,
+phone: document.getElementById("phone").value,
+address: document.getElementById("address").value,
+quantity: document.getElementById("quantity").value
+};
+
+try {
+
+await fetch(
+"https://script.google.com/macros/s/AKfycbyQ8uw3nT3Vhs2rOh-p8RilNY7zF2Duysa8Iv6JBgHih8v6HcJq59R000hSwylfc9c0yA/exec",
+{
+method: "POST",
+mode: "no-cors",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify(data)
+}
 );
+
+alert("Order placed successfully!\n\nTea Buddy has received your order.");
+
+document.getElementById("orderForm").reset();
 
 closeForm();
 
-this.reset();
+} catch(error){
+
+alert("Something went wrong. Please try again.");
+
+console.error(error);
+
+}
 
 });
 
@@ -363,4 +404,3 @@ this.reset();
 
 </body>
 </html>
-```
